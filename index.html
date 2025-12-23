@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استكشاف حلتهالك | الصفحة الرئيسية</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #2c8cff, #ffffff);
+            --container-bg: rgba(255, 255, 255, 0.85);
+            --text-color: #1e293b;
+            --button-primary: #1da1f2;
+            --button-report: #ff5252;
+            --button-add: #28a745;
+            --shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --nav-bg: rgba(255, 255, 255, 0.7);
+            --input-bg: #f0f0f0;
+            --border-color: rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(-45deg, #020617, #0f172a, #1e293b, #334155);
+            --container-bg: rgba(15, 23, 42, 0.9);
+            --text-color: #f8fafc;
+            --button-primary: #1da1f2;
+            --button-report: #ff5252;
+            --button-add: #28a745;
+            --shadow: 0 20px 40px rgba(0,0,0,0.4);
+            --nav-bg: rgba(15, 23, 42, 0.7);
+            --input-bg: #2a313d;
+            --border-color: rgba(255,255,255,0.1);
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: moveGradient 12s ease infinite;
+            color: var(--text-color);
+            transition: 0.5s;
+            overflow-x: hidden;
+            /* حماية ضد النسخ */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* شاشة التحميل */
+        #loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-gradient); background-size: 400% 400%;
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .loader-icon { font-size: 80px; color: var(--button-primary); animation: searchPulse 1.5s infinite ease-in-out; }
+        @keyframes searchPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* الهيدر */
+        .navbar {
+            position: sticky; top: 0; display: flex; justify-content: space-between;
+            align-items: center; padding: 15px 25px; background: var(--nav-bg);
+            backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); z-index: 100;
+        }
+        .logo { height: 45px; transition: 0.3s; }
+        .nav-buttons { display: flex; gap: 12px; }
+        .btn-icon {
+            background: var(--container-bg); border: none; color: var(--button-primary);
+            width: 45px; height: 45px; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; cursor: pointer;
+            font-size: 18px; box-shadow: var(--shadow); transition: 0.3s;
+        }
+        .btn-icon:hover { transform: translateY(-3px); background: var(--button-primary); color: white; }
+
+        /* المودال العام */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px); justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--container-bg); padding: 30px; border-radius: 30px;
+            width: 90%; max-width: 420px; position: relative; box-shadow: var(--shadow);
+            animation: zoomIn 0.3s ease; border: 1px solid var(--border-color);
+        }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .close-btn {
+            position: absolute; top: 15px; left: 15px; font-size: 28px;
+            cursor: pointer; color: var(--text-color); opacity: 0.7;
+        }
+        .close-btn:hover { opacity: 1; }
+
+        /* أزرار المودال */
+        .modal-button {
+            display: flex; align-items: center; justify-content: center; gap: 15px; 
+            text-decoration: none; color: white; padding: 15px 20px; border-radius: 20px;
+            font-weight: bold; margin-bottom: 12px; transition: 0.3s; font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .modal-button:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* نماذج الإدخال */
+        .modal-form label { display: block; margin: 15px 0 5px; font-weight: bold; }
+        .modal-form input, .modal-form textarea {
+            width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; 
+            border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-color);
+            box-sizing: border-box;
+        }
+        .modal-form button {
+            width: 100%; padding: 14px; border: none; border-radius: 20px; color: white; 
+            font-size: 16px; cursor: pointer; transition: 0.3s; font-weight: bold;
+        }
+        .modal-form button:hover { opacity: 0.9; transform: scale(1.02); }
+
+        main { text-align: center; padding: 50px 20px; }
+        .hero-card {
+            background: var(--container-bg); padding: 40px; border-radius: 30px; 
+            max-width: 500px; margin: auto; box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-icon"><i class="fas fa-search"></i></div>
+    </div>
+
+    <header class="navbar">
+        <div class="nav-buttons">
+            <button id="optionsToggle" class="btn-icon" title="القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
+            <button id="theme-toggle" class="btn-icon">
+                <i id="theme-icon" class="fas fa-moon"></i>
+            </button>
+        </div>
+        <img id="main-logo" src="https://github.com/elmoftary-vr/Halthalk/raw/4a1dc7ecbb8371080b183f1b7b720d2a29fff926/20251205_163046.png" class="logo">
+    </header>
+
+    <!-- مودال الخيارات -->
+    <div id="optionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeOptionsModal()">&times;</span>
+            <div style="text-align: center;">
+                <i class="fas fa-th-large" style="font-size: 50px; color: var(--button-primary); margin-bottom: 15px;"></i>
+                <h2 style="margin-bottom: 25px;">خيارات المنصة</h2>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                 <a href="https://home-halthalk.vercel.app" class="modal-button" style="background: var(--button-primary);">
+                     <i class="fas fa-home"></i> الصفحة الرئيسية
+                 </a>
+                 <a href="https://t.me/Halthalk" target="_blank" class="modal-button" style="background: var(--button-primary);">
+                     <i class="fas fa-info-circle"></i> قناتنا الرسمية
+                 </a>
+                 <a href="#" class="modal-button" style="background: var(--button-report);" id="reportBtn">
+                     <i class="fas fa-bug"></i> التقارير
+                 </a>
+                 <a href="#" class="modal-button" style="background: var(--button-add);" id="addThingBtn">
+                     <i class="fas fa-plus"></i> أضف شئ جديد
+                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال أضف شيء -->
+    <div id="addThingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAddThingModal()">&times;</span>
+            <h2><i class="fas fa-plus-circle"></i> أضف شيء جديد</h2>
+            <form id="addThingForm" class="modal-form">
+                <label>اسمك:</label>
+                <input type="text" id="thingTitle" required>
+                <label>كم عمرك (اختياري):</label>
+                <input type="text" id="thingLink">
+                <label>الوصف / التفاصيل:</label>
+                <textarea id="thingDescription" rows="5" required></textarea>
+                <button type="submit" style="background: var(--button-add);">إرسال للمراجعة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال التقارير -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeReportModal()">&times;</span>
+            <h2><i class="fas fa-bug"></i> تقرير / ملاحظة فنية</h2>
+            <form id="reportForm" class="modal-form">
+                <label>اسمك (اختياري):</label>
+                <input type="text" id="reporterName">
+                <label>نوع المشكلة:</label>
+                <input type="text" id="issueType">
+                <label>التفاصيل الكاملة:</label>
+                <textarea id="reportDescription" rows="5" required></textarea>
+                <button type="submit" style="background: var(--button-report);">إرسال التقرير</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <div class="hero-card">
+            <h1>أهلاً بك في منصة حلتهالك</h1>
+            <p>استكشف كل عروض و مشاريع المنصة مجاناً للطلاب</p>
+        </div>
+    </main>
+
+    <script>
+        // توكنات الإرسال
+        const ADD_THING_BOT_TOKEN = '8102433429:AAEWLBKx68nh19kWG9sEFMqFP4_cgRF9GcE';
+        const ADD_THING_CHAT_ID = '7428842238';
+        const REPORT_BOT_TOKEN = '8102433429:AAEWLBKx68nh19kWG9sEFMqFP4_cgRF9GcE';
+        const REPORT_CHAT_ID = '7428842238';
+
+        async function sendToTelegram(msg, token, chatId) {
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({chat_id: chatId, text: msg, parse_mode: 'Markdown'})
+            });
+        }
+
+        // وظائف المودالات
+        const optionsModal = document.getElementById('optionsModal');
+        const addThingModal = document.getElementById('addThingModal');
+        const reportModal = document.getElementById('reportModal');
+
+        function openModal(modal) {
+            modal.style.display = 'flex';
+            document.body.classList.add('page-hidden');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+            document.body.classList.remove('page-hidden');
+        }
+
+        document.getElementById('optionsToggle').onclick = () => openModal(optionsModal);
+        document.getElementById('reportBtn').onclick = () => { closeAllModals(); openModal(reportModal); };
+        document.getElementById('addThingBtn').onclick = () => { closeAllModals(); openModal(addThingModal); };
+
+        window.onclick = (e) => { if (e.target.classList.contains('modal')) closeAllModals(); };
+
+        // إرسال أضف شيء
+        document.getElementById('addThingForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('thingTitle').value.trim();
+            const age = document.getElementById('thingLink').value.trim();
+            const desc = document.getElementById('thingDescription').value.trim();
+            const time = new Date().toLocaleString('ar-EG', { timeZone: 'Africa/Cairo' });
+            const msg = `*[✅ طلب جديد]*\nوقت: ${time}\nاسم: ${name}\nعمر: ${age||'غير محدد'}\nتفاصيل: ${desc}`;
+            await sendToTelegram(msg, ADD_THING_BOT_TOKEN, ADD_THING_CHAT_ID);
+            alert('تم الإرسال بنجاح!');
+            e.target.reset(); closeAllModals();
+        };
+
+        // إرسال تقرير
+        document.getElementById('reportForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reporterName').value.trim();
+            const type = document.getElementById('issueType').value.trim();
+            const desc = document.getElementById('reportDescription').value.trim();
+            const time = new Date().toLocaleString('ar-EG', { timeZone: 'Africa/Cairo' });
+            const msg = `*[⚠️ تقرير]*\nوقت: ${time}\nمرسل: ${name||'مجهول'}\nنوع: ${type||'غير محدد'}\nتفاصيل: ${desc}`;
+            await sendToTelegram(msg, REPORT_BOT_TOKEN, REPORT_CHAT_ID);
+            alert('تم الإرسال بنجاح!');
+            e.target.reset(); closeAllModals();
+        };
+
+        function closeOptionsModal() { closeAllModals(); }
+        function closeAddThingModal() { closeAllModals(); }
+        function closeReportModal() { closeAllModals(); }
+
+        // Dark Mode
+        function toggleTheme() {
+            const isDark = document.body.dataset.theme === 'dark';
+            document.body.dataset.theme = isDark ? '' : 'dark';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            const logo = document.getElementById('main-logo');
+            logo.src = isDark 
+                ? "https://github.com/elmoftary-vr/Halthalk/raw/4a1dc7ecbb8371080b183f1b7b720d2a29fff926/20251205_163046.png"
+                : "https://raw.githubusercontent.com/elmoftary-vr/Halthalk/45d49545c1a08433a739887c4aed3d65fd9c335f/20251206_234458.png";
+        }
+
+        document.getElementById('theme-toggle').onclick = toggleTheme;
+
+        // شاشة التحميل
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader-wrapper').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader-wrapper').style.display = 'none', 600);
+            }, 1800);
+
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark') toggleTheme();
+        };
+
+        // حماية قوية ضد النسخ والتفتيش
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('dragstart', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+
+        document.addEventListener('keydown', e => {
+            // منع Ctrl+A, C, V, X, U, Shift+Ctrl+I, F12
+            if (e.ctrlKey && (e.key === 'a' || e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || 
+                (e.shiftKey && e.key === 'I'))) {
+                e.preventDefault();
+            }
+            if (e.key === 'F12') e.preventDefault();
+        });
+    </script>
+</body>
+</html>
